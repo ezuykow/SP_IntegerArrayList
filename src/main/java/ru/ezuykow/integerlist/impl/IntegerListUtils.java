@@ -9,12 +9,12 @@ import java.util.Arrays;
 public class IntegerListUtils {
 
     public final static int DEFAULT_ARRAY_SIZE = 10;
-    public final static int EXTENSION_FACTOR = 2;
+    public final static float EXTENSION_FACTOR = 1.5F;
 
     public static Integer[] extendArray(Integer[] array) {
         final int oldSize = array.length;
-        final int newSize = oldSize * EXTENSION_FACTOR;
-        return array = Arrays.copyOf(array, newSize);
+        final int newSize = (int) (oldSize * EXTENSION_FACTOR);
+        return Arrays.copyOf(array, newSize);
     }
 
     public static void checkItemIsNotNull(Integer item) {
@@ -46,17 +46,32 @@ public class IntegerListUtils {
     }
 
     public static void sortItems(Integer[] items, int itemsCount) {
-        insertionSort(items, itemsCount);
+        quickSort(items, 0, itemsCount-1);
     }
 
-    private static void insertionSort(Integer[] items, int itemsCount) {
-        for (int i = 1; i < itemsCount; i++) {
-            int temp = items[i];
-            int j = i;
-            for ( ; (j > 0) && (items[j - 1] > temp); j--) {
-                items[j] = items[j - 1];
-            }
-            items[j] = temp;
+    private static void quickSort(Integer[] items, int left, int right) {
+        if (left < right) {
+            int pivot = partition(items, left, right);
+            quickSort(items, left, pivot - 1);
+            quickSort(items, pivot + 1, right);
         }
+    }
+
+    private static int partition(Integer[] items, int left, int right) {
+        int i = left - 1;
+        for (int j = left; j < right ; j++) {
+            if (items[j] <= items[right]) {
+                i++;
+                swapItems(items, i, j);
+            }
+        }
+        swapItems(items, i + 1, right);
+        return i + 1;
+    }
+
+    private static void swapItems(Integer[] arr, int idxA, int idxB) {
+        int temp = arr[idxA];
+        arr[idxA] = arr[idxB];
+        arr[idxB] = temp;
     }
 }
